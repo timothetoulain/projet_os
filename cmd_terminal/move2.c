@@ -5,9 +5,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include<string.h>
-/* la taille des blocs lus/ecrits */
+
 #define BSIZE 512
 #define ARRAY_SIZE 255
+
 
 int isDirectory(const char *path) {
    struct stat statbuf;
@@ -15,14 +16,7 @@ int isDirectory(const char *path) {
        return 0;
    return S_ISDIR(statbuf.st_mode);
 }
-
-/***************************************************************************
-* arguments :
-* - le fichier source (a copier)
-* - un fichier destination (qui ne doit pas deja exister)
-*
-***************************************************************************/
-int main(int argc, char** argv) {
+int my_cp(char *source, char *destination) {
 	int fd1, fd2; /* les descripteurs pour les 2 fichiers */
 	int count; /* le nb d’octets par transfert */
 	char buf[BSIZE]; /* le buffer de transfert */
@@ -30,43 +24,37 @@ int main(int argc, char** argv) {
 	memset(buf,0,BSIZE);
 	memset(nameFileCopied,0,ARRAY_SIZE);
 
-	if (argc != 3) { /* nb incorrect de parametres: erreur */
-		fprintf(stderr, "usage: %s <source> <dest>\n", *argv);
-		return 1;
-	}
-	fd1 = open(argv[1], O_RDONLY);
+	
+	fd1 = open(source, O_RDONLY);
 	if (fd1==-1) { /* ouverture source impossible */
-		perror(argv[1]);
+		perror(source);
 		return 2;
 	}
 	int len;
-	len=strlen(argv[1]);
+	len=strlen(source);
 	printf("taille : %d\n",len);
 
 
-	strcpy(nameFileCopied,argv[2]);
+	strcpy(nameFileCopied,destination);
 
-	if(isDirectory(argv[2])){
+	if(isDirectory(destination)){
 		printf("is dir\n");
-		if(strstr(argv[2],"../")!=NULL || strstr(argv[2],"./")!=NULL ){
+		if(strstr(destination,"../")!=NULL || strstr(destination,"./")!=NULL ){
 			printf("test\n");
 			char *sub;
 			char temp[ARRAY_SIZE];
-			sub = strtok(argv[1],"/");
+			sub = strtok(source,"/");
 			while(sub!=NULL){
 				strcpy(temp,sub);
 				sub = strtok(NULL,"/");
 			}
 			printf("fin while: %s\n",temp);
 			strcat(nameFileCopied,temp);
-			//on fait strcat avec seulement le nom du ficier source
 		}
 		else{
 			strcat(nameFileCopied,"/");
-			strcat(nameFileCopied,argv[1]);
+			strcat(nameFileCopied,source);
 		}
-
-		
 	}
 	printf("file: %s\n",nameFileCopied);
 
@@ -87,5 +75,27 @@ int main(int argc, char** argv) {
 	/* fermeture des deux fichiers */
 	close(fd1);
 	close(fd2);
+	return 0;
+}
+
+
+/***************************************************************************
+* arguments :
+* - le fichier source (a copier)
+* - un fichier destination (qui ne doit pas deja exister)
+*
+***************************************************************************/
+int main(int argc, char** argv) {
+	if (argc != 3) { /* nb incorrect de parametres: erreur */
+		fprintf(stderr, "usage: %s <source> <dest>\n", *argv);
+		return 1;
+	}
+			printf("%s\n",argv[1]);
+	char temp[ARRAY_SIZE];
+	strcpy(temp,argv[1]);
+	int status=my_cp(argv[1], argv[2]);
+	if(status==0){
+		unlink(temp);
+	}
 	return 0;
 }

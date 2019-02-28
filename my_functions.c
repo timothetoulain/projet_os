@@ -10,6 +10,15 @@
 #define BSIZE 512
 #define ARRAY_SIZE 80
 
+
+
+int isDirectory(const char *path) {
+   struct stat statbuf;
+   if (stat(path, &statbuf) != 0)
+       return 0;
+   return S_ISDIR(statbuf.st_mode);
+}
+
 /* delete a file
 * param1: name of the file
 */
@@ -82,29 +91,55 @@ int my_cp(char *source, char *destination) {
 	int fd1, fd2; /* descriptors for the files */
 	int count; /* nb of octets by transfert */
 	char buf[BSIZE]; /* transfert buffer */
+	char nameFileCopied[ARRAY_SIZE];
+	memset(buf,0,BSIZE);
+	memset(nameFileCopied,0,ARRAY_SIZE);
 	
 	fd1 = open(source, O_RDONLY);
 	if (fd1==-1) { /* impossible to open source */
 		perror(source);
 		return 1;
 	}
-	/* open second file only if it doesn't exist */
-	fd2 = open(destination, O_WRONLY | O_CREAT | O_EXCL,00644);
-	if (fd2==-1) { /* impossible to open destination */
-		perror(destination);
-		close(fd1);
-		return 1;
+	strcpy(nameFileCopied,destination);
+
+	if(isDirectory(destination)){
+		printf("is dir\n");
+		if(strstr(destination,"../")!=NULL || strstr(destination,"./")!=NULL ){
+			printf("test\n");
+			char *sub;
+			char temp[ARRAY_SIZE];
+			sub = strtok(source,"/");
+			while(sub!=NULL){
+				strcpy(temp,sub);
+				sub = strtok(NULL,"/");
+			}
+			printf("fin while: %s\n",temp);
+			strcat(nameFileCopied,temp);
+		}
+		else{
+			strcat(nameFileCopied,"/");
+			strcat(nameFileCopied,source);
+		}
 	}
-	/* read/write by blocks of BSIZE octets */
-	/* we stop at the first incomplete block */
+	printf("file: %s\n",nameFileCopied);
+
+	/* ouverture second fichier ssi il n’existe pas */
+	fd2 = open(nameFileCopied, O_WRONLY | O_CREAT | O_EXCL,00644);
+	if (fd2==-1) { /* ouverture destination impossible */
+		perror(nameFileCopied);
+		close(fd1);
+		return 3;
+	}
+	/* lecture/ecriture par blocs de BSIZE octets */
+	/* on s’arrete au premier bloc incomplet (EOF de source) */
 	do {
 		count = read(fd1,buf, BSIZE);
 		write(fd2,buf, count);
 	} while (count==BSIZE);
 	
+	/* fermeture des deux fichiers */
 	close(fd1);
 	close(fd2);
-	printf("cpy\n");
 	return 0;
 }
 
@@ -177,9 +212,11 @@ void my_ls(int l, char *path) {
 * param2: new name for the file or destination
 */
 void my_move(char *filename,char *destination){
+	char temp[ARRAY_SIZE];
+	strcpy(temp,filename);
 	int status=my_cp(filename, destination);
 	if(status==0){
-		unlink(filename);
+		unlink(temp);
 	}
 }
 

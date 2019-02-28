@@ -22,7 +22,7 @@ int main (int argc, char **argv){
  	}
  	else if(argc==2){
 		if (stat(argv[1], &info) == -1) {
-	  		int status=mkdir(argv[1], 0700);
+	  		int status=mkdir(argv[1], 0777);
 	  		if(status!=0){
 	  			perror("Couldn't create the directory\n");
 	  			exit(1);

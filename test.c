@@ -37,10 +37,10 @@ int main(){
 	my_cp(source,destination);
 
 	//display information about content of a directory
-	my_ls(0,NULL);
+	//my_ls(0,NULL);
 
 	// move/rename a file
-	my_move("b.txt","c.txt");
+	my_move("a.txt","dirtest");
 /*
 	memset(source,0,ARRAY_SIZE);
 	memset(destination,0,ARRAY_SIZE);

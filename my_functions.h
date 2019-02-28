@@ -18,4 +18,6 @@ void tree(char *dirName, char *destination);
 void copy_dir(char *source, char *destination);
 void insertCharPrev(char *buf);
 void insertCharSlash(char *buf);
+int isDirectory(const char *path);
+
 
