@@ -37,7 +37,7 @@ int main(){
 	my_cp(source,destination);
 
 	//display information about content of a directory
-	//my_ls(0,NULL);
+	my_ls(0,NULL);
 
 	// move/rename a file
 	my_move("b.txt","c.txt");
