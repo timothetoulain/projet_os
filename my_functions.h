@@ -20,4 +20,13 @@ void insertCharPrev(char *buf);
 void insertCharSlash(char *buf);
 int isDirectory(const char *path);
 
+void deleteNCar(char *destination,int lenDest,int len);
+int analyseInput(char *input,char *command, char *argument,char *param1,char *param2);
+void deleteSpaces(char *input);
+int readInput(char *input, int length);
+void deleteMultipleSpaces(char *str);
+
+
+
+
 

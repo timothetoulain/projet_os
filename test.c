@@ -41,13 +41,13 @@ int main(){
 
 	// move/rename a file
 	my_move("a.txt","dirtest");
-/*
-	memset(source,0,ARRAY_SIZE);
+
+	/*memset(source,0,ARRAY_SIZE);
 	memset(destination,0,ARRAY_SIZE);
-	strcpy(source,"dirtest");
-	strcpy(destination,"testdirec");
-	copy_dir(source,destination);
-*/
+	strcpy(source,"source");
+	strcpy(destination,"desti");
+	copy_dir(source,destination);*/
+
 	
 	return 0;
 }

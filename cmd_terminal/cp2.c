@@ -39,10 +39,6 @@ int main(int argc, char** argv) {
 		perror(argv[1]);
 		return 2;
 	}
-	int len;
-	len=strlen(argv[1]);
-	printf("taille : %d\n",len);
-
 
 	strcpy(nameFileCopied,argv[2]);
 
@@ -59,14 +55,11 @@ int main(int argc, char** argv) {
 			}
 			printf("fin while: %s\n",temp);
 			strcat(nameFileCopied,temp);
-			//on fait strcat avec seulement le nom du ficier source
 		}
 		else{
 			strcat(nameFileCopied,"/");
 			strcat(nameFileCopied,argv[1]);
 		}
-
-		
 	}
 	printf("file: %s\n",nameFileCopied);
 

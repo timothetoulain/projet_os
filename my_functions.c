@@ -11,13 +11,293 @@
 #define ARRAY_SIZE 80
 
 
-
+//Determine if a path is a directory
 int isDirectory(const char *path) {
    struct stat statbuf;
    if (stat(path, &statbuf) != 0)
        return 0;
    return S_ISDIR(statbuf.st_mode);
 }
+
+//Replace multiple spaces by a single space
+void deleteMultipleSpaces(char *str){
+    char *dest = str;  /* Destination to copy to */
+
+    /* While we're not at the end of the string, loop... */
+    while (*str != '\0'){
+        /* Loop while the current character is a space, AND the next
+         * character is a space
+         */
+        while (*str == ' ' && *(str + 1) == ' ')
+            str++;  /* Just skip to next character */
+       /* Copy from the "source" string to the "destination" string,
+        * while advancing to the next character in both
+        */
+       *dest++ = *str++;
+    }
+    /* Make sure the string is properly terminated */    
+    *dest = '\0';
+}
+
+//Read the input on the command line 
+int readInput(char *input, int length){
+    char *position = NULL;
+    // We read on the standard input
+    if(fgets(input, length, stdin) != NULL){  
+        position = strchr(input, '\n'); // We look for the '\n'
+        if(position != NULL){ // If we've found it
+            *position = '\0'; // We delete it
+        }
+        return 0; 
+    }
+    else{
+        return 1; 
+    }
+}
+//Delete the spaces in a string
+//Can be use to deal more easily with the user's input
+void deleteSpaces(char *input){
+        int i;
+		int j = -1;
+		for (i = 0; input[i]; i++){
+			if (input[i] != ' '){
+		    	input[++j] = input[i];
+			}
+		}
+		input[++j] = '\0';
+}
+
+//Analyse the input
+int analyseInput(char *input,char *command, char *argument,char *param1,char *param2){
+	//if we recognise the "ls" command
+	if(input[0]=='l' && input[1]=='s'){
+
+		//No second parameter expected
+		strcpy(param2,"no param2");
+		deleteSpaces(input);
+		strcpy(command,"ls2");
+		printf("ls analysed\n");
+		int len=strlen(input);
+		//If there is parameter(s)
+		if(len>2){
+			if(input[2]=='-' && input[3]=='l'){
+				argument[0]='-';
+				argument[1]='l';
+
+				//We check if there is another parameter after -l
+				if(len==4){
+					printf("no path\n");
+					param1=NULL;
+					return 0;
+				}
+				else{
+					int i,j;
+					//We affect the parameter after -l to param1; it's supposed to be a path
+					for(i=4,j=0;i<len;j++,i++){
+						param1[j]=input[i];
+					}
+					printf("command: %s\n",command);
+					printf("param1: %s\n",param1);
+					printf("argument: %s\n",argument);
+
+					//We check if param1 is a directory
+					int status=isDirectory(param1);
+					if(status!=1){
+						printf("not a valid path -l\n");
+						return -1;
+					}
+					else{
+						return 0;
+					}
+				}
+			}
+			//If there is no argument
+			else{
+				//argument takes the default value '00'
+				argument[0]='0';
+				argument[1]='0';
+				int len=strlen(input);
+				int i,j;
+				//param1 takes the value of the parameter, which is supposed to be a path
+				for(i=2,j=0;i<len;j++,i++){
+					param1[j]=input[i];
+				}
+				//We check if it's a directory
+				int status=isDirectory(param1);
+				if(status!=1){
+					printf("not a valid path\n");
+					return -1;
+				}
+				else{
+					printf("command: %s\n",command);
+					printf("param1: %s\n",param1);
+					printf("argument: %s\n",argument);
+					return 0;
+				}
+			}
+		}
+		//If there is no argument nor parameter
+		else{
+			param1=NULL;
+			argument[0]='0';
+			argument[1]='0';
+			return 0;
+		}
+	}
+	//If we detect mkdir
+	else if(input[0]=='m' && input[1]=='k' && input[2]=='d' && input[3]=='i' && input[4]=='r'){
+		//No second parameter expected
+		strcpy(param2,"no param2");
+		printf("mkdir detected\n");
+		//There is no argument for this function
+		argument[0]='0';
+		argument[1]='0';
+		deleteSpaces(input);
+		strcpy(command,"mkdir2");
+		int len=strlen(input);
+		if(len==5){
+			printf("not enough param\n");
+			//param1=NULL;
+			return -1;
+		}
+		int i,j;
+		//We copy the parameter into param1, which is supposed to be a path or directory name
+		for(i=5,j=0;i<len;j++,i++){
+			param1[j]=input[i];
+		}
+		return 0;
+	}
+	
+	//If we detect cp
+	else if(input[0]=='c' && input[1]=='p'){
+		
+		printf("mkdir detected\n");
+		//There is no argument for this function
+		argument[0]='0';
+		argument[1]='0';
+		printf("before %s\n",input);
+		deleteMultipleSpaces(input);
+		printf("after %s\n",input);
+
+		
+
+		strcpy(command,"cp2");
+		int len=strlen(input);
+		if(len==2){
+			printf("not enough param\n");
+			return -1;
+		}
+		char *sub;
+		sub = strtok(input," ");
+		sub = strtok(NULL," ");
+		strcpy(param1,sub);
+		sub = strtok(NULL," ");
+		strcpy(param2,sub);
+
+					printf("param1 %s\n",param1);
+					printf("param2 %s\n",param2);
+
+	
+		return 0;
+	}
+
+	//If we detect unlink
+	else if(input[0]=='u' && input[1]=='n' && input[2]=='l' && input[3]=='i' && input[4]=='n' && input[5]=='k'){
+		//No second parameter expected
+		strcpy(param2,"no param2");
+		printf("unlink detected\n");
+		//There is no argument for this function
+		argument[0]='0';
+		argument[1]='0';
+		deleteSpaces(input);
+		strcpy(command,"unlink2");
+		int len=strlen(input);
+		if(len==6){
+			printf("not enough param\n");
+			//param1=NULL;
+			return -1;
+		}
+		int i,j;
+		//We copy the parameter into param1, which is supposed to be a path or directory name
+		for(i=6,j=0;i<len;j++,i++){
+			param1[j]=input[i];
+		}
+		return 0;
+	}
+
+	//If we detect rmdir
+	else if(input[0]=='r' && input[1]=='m' && input[2]=='d' && input[3]=='i' && input[4]=='r'){
+		//No second parameter expected
+		strcpy(param2,"no param2");
+		printf("rmdir detected\n");
+		//There is no argument for this function
+		argument[0]='0';
+		argument[1]='0';
+		deleteSpaces(input);
+		strcpy(command,"rmdir2");
+		int len=strlen(input);
+		if(len==5){
+			printf("not enough param\n");
+			//param1=NULL;
+			return -1;
+		}
+		int i,j;
+		//We copy the parameter into param1, which is supposed to be a path or directory name
+		for(i=5,j=0;i<len;j++,i++){
+			param1[j]=input[i];
+		}
+		return 0;
+	}
+
+	//If we detect move
+	else if(input[0]=='m' && input[1]=='v'){
+		
+		printf("move detected\n");
+		//There is no argument for this function
+		argument[0]='0';
+		argument[1]='0';
+		printf("before %s\n",input);
+		deleteMultipleSpaces(input);
+		printf("after %s\n",input);	
+
+		strcpy(command,"mv2");
+		int len=strlen(input);
+		if(len==2){
+			printf("not enough param\n");
+			return -1;
+		}
+		char *sub;
+		sub = strtok(input," ");
+		sub = strtok(NULL," ");
+		strcpy(param1,sub);
+		sub = strtok(NULL," ");
+		strcpy(param2,sub);
+
+		printf("param1 %s\n",param1);
+		printf("param2 %s\n",param2);
+	
+		return 0;
+	}
+	//If the input is not a valid command
+	else{
+		return -1;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/************************ The functions below are meant to be used in C program, not on the command line****************/
+
 
 /* delete a file
 * param1: name of the file
@@ -230,11 +510,18 @@ int MAXLEN=15;
 int INDENT=3;
 void copy_dir(char *source, char *destination){
 	my_mkdir(destination);
-
-	tree(source,destination);
+	char my_cwd[ARRAY_SIZE];
+	strcpy(my_cwd,getcwd(my_cwd, sizeof(my_cwd)));
+	insertCharSlash(destination);
+	strcat(my_cwd,destination);
+	tree(source,my_cwd);
 }
 char tmp_name[ARRAY_SIZE];
+char *sub;
+char tmp_desti[ARRAY_SIZE];
+
 void tree(char *dirName, char *destination){
+	printf("destination debut: %s\n",destination);
 	memset(tmp_name,0,ARRAY_SIZE);
 	int counter =0;
 	DIR *curDir;
@@ -255,20 +542,36 @@ void tree(char *dirName, char *destination){
 		/* display inode,name (and "/" if it's a directory */
 		if(!S_ISDIR(buf.st_mode)){
 			strcpy(tmp_name,cur->d_name);
+			
 			insertCharSlash(tmp_name);
-			//char conca[ARRAY_SIZE];
+
+			int len=strlen(tmp_name);
 			strcat(destination,tmp_name);
 			printf("conca desti:%s\n",destination);
-
+			int lenDest=strlen(destination);
 			my_cp(cur->d_name,destination);
-			printf("(%d) %s\n",(int)buf.st_ino,cur->d_name);
+			deleteNCar(destination,lenDest,len);
+			
 		}
 		if(S_ISDIR(buf.st_mode)&&strcmp(cur->d_name,".")&& strcmp(cur->d_name,"..")){
-			counter++;
+			memset(tmp_name,0,ARRAY_SIZE);
+			memset(tmp_desti,0,ARRAY_SIZE);
+
+			//counter++;
 			printf("directory detected\n");
+				strcpy(tmp_name,destination);
+				strcpy(tmp_desti,cur->d_name);
+
+				insertCharSlash(tmp_desti);
+				strcat(tmp_name,tmp_desti);
+				printf("makedir %s\n",tmp_name);
+				my_mkdir(tmp_name);
+
 			/*if(counter>1)*/ 
-			insertCharPrev(destination);
-			strcpy(cur->d_name,tmp_name);
+			//insertCharPrev(destination);
+			//strcpy(cur->d_name,tmp_name);
+			printf("bef recursion: %s   %s\n",cur->d_name,destination);
+			tree(cur->d_name,destination);
 			/*insertCharSlash(tmp_name);
 			strcat(destination,tmp_name);
 			tree(cur->d_name,destination);*/
@@ -301,4 +604,14 @@ void insertCharSlash(char *buf){
 	buf[0]='/';
 
 	printf("after slash %s\n",buf);
+}
+void deleteNCar(char *destination,int lenDest,int len){
+	int i;
+	printf("before delete %s\n",destination);
+	for(i=lenDest;i>=lenDest-len;i--){
+		destination[i]='\0';
+
+	} 
+	printf("after delete %s\n",destination);
+
 }

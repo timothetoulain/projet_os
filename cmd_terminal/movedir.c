@@ -1,13 +1,88 @@
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<fcntl.h>
+#include<dirent.h>
+#include<stdlib.h>
 #include<string.h>
 
 #define BSIZE 512
 #define ARRAY_SIZE 255
+int MAXLEN=15;
+int INDENT=3;
+
+void insertCharPrev(char *buf){
+	printf("before %s\n",buf);
+	int i, j=0;
+	for(i=0;i<3;i++){
+		for(int j=ARRAY_SIZE-2;j>=0;j--){
+			buf[j+1]=buf[j];
+		}
+	}
+	buf[0]='.';
+	buf[1]='.';
+	buf[2]='/';
+
+	printf("after %s\n",buf);
+}
+
+void insertCharSlash(char *buf){
+	printf("before slash %s\n",buf);
+	int i, j=0;
+		for(int j=ARRAY_SIZE-2;j>=0;j--){
+			buf[j+1]=buf[j];
+		}
+	buf[0]='/';
+
+	printf("after slash %s\n",buf);
+}
+char tmp_name[ARRAY_SIZE];
+
+void tree(char *dirName, char *destination){
+	memset(tmp_name,0,ARRAY_SIZE);
+	int counter =0;
+	DIR *curDir;
+	struct stat buf;
+	struct dirent *cur;
+	char cwd[MAXLEN];
+	chdir(dirName);
+	getcwd(cwd,MAXLEN);
+	curDir=opendir(".");
+	if(!curDir){
+		perror("opendir failed\n");
+		exit(1);
+	}
+	//printf("we are in %s\n",strcmp(dirName,".")?dirName:cwd);
+	while(cur=readdir(curDir)){
+		lstat(cur->d_name, &buf);
+
+		/* display inode,name (and "/" if it's a directory */
+		if(!S_ISDIR(buf.st_mode)){
+			strcpy(tmp_name,cur->d_name);
+			insertCharSlash(tmp_name);
+			//char conca[ARRAY_SIZE];
+			strcat(destination,tmp_name);
+			printf("conca desti:%s\n",destination);
+
+			my_cp(cur->d_name,destination);
+			printf("(%d) %s\n",(int)buf.st_ino,cur->d_name);
+		}
+		if(S_ISDIR(buf.st_mode)&&strcmp(cur->d_name,".")&& strcmp(cur->d_name,"..")){
+			counter++;
+			printf("directory detected\n");
+			/*if(counter>1)*/ 
+			insertCharPrev(destination);
+			strcpy(cur->d_name,tmp_name);
+			/*insertCharSlash(tmp_name);
+			strcat(destination,tmp_name);
+			tree(cur->d_name,destination);*/
+		}
+	}
+	closedir(curDir);
+	chdir("..");
+}
+
 
 
 int isDirectory(const char *path) {
@@ -24,6 +99,18 @@ int my_cp(char *source, char *destination) {
 	memset(buf,0,BSIZE);
 	memset(nameFileCopied,0,ARRAY_SIZE);
 
+	//on doit copier un dossier
+	if(isDirectory(source)){
+		if(isDirectory(destination)){
+			tree(source,destination);
+		}
+		else{
+			printf("Error, cannot copy a directory into a file\n");
+			return 1;
+		}
+		return 0;
+	}
+	else{
 	
 	fd1 = open(source, O_RDONLY);
 	if (fd1==-1) { /* ouverture source impossible */
@@ -31,6 +118,7 @@ int my_cp(char *source, char *destination) {
 		return 2;
 	}
 	
+
 
 	strcpy(nameFileCopied,destination);
 
@@ -73,6 +161,7 @@ int my_cp(char *source, char *destination) {
 	close(fd1);
 	close(fd2);
 	return 0;
+}
 }
 
 
