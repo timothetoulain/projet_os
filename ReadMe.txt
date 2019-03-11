@@ -8,7 +8,7 @@ ex de deroulement:
   mkdir test
   etc...
 Les commandes ls et mkdir exécutées seront bien celles qui sont codées dans cmd_terminal.
-Pour le moment,les commandes disponibles sont ls, mkdir, rmdir, unlink(supprimer un ficher, éventuellement à renommer par 'rm')
+Pour le moment,les commandes disponibles sont ls, mkdir, rmdir,touch(creer un fichier),unlink(supprimer un ficher, éventuellement à renommer par 'rm')
 cp et mv, sachant que cp et mv ne sont pas totalement fonctionnelles dans le cas des répertoires.
 
 Dans le main, on créé un processus fils à chaque nouvelle entrée de l'utilisateur afin d'exécuter sa commande.
@@ -18,3 +18,11 @@ analyseInput est la fonction principale permettant d'interpréter et traiter l'e
 
 Il faut voir pour eventuellement ajouter d'autres commandes et pour gérer l'aspect mémoire comme demand dans le sujet.
 Je suppose qu'il faut allouer un espace mémoire, mais la façon de le faire est assez flou pour moi.
+
+
+UPDATE: le script install.sh permet de copier le dossier cmd_terminal dans /bin/test afin que les commandes soit utilisables depuis n'importe où. (les noms de dossier seront changés par la suite)
+le script uninstall.sh permet de supprimer le dossier /bin/test.
+Pour permettre le deplacement et la suppression de repertoire dans /bin, on doit changer temporairement les permissions utilisateurs.
+
+Rappel: executer script shell: -le rendre executable: chmod +x install.sh
+                                -l'executer: ./install.sh
