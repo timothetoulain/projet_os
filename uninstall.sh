@@ -1,11 +1,10 @@
 #!/bin/bash
 
-#TODO replace cp by mv
-if [ $(stat -c "%a" "/bin") == "755" ] 
+if [ $(stat -c "%a" "/usr/local") == "755" ] 
 	then 
-    	sudo chmod 777 "/bin"
-      	rm -rf "/bin/test"
-      	sudo chmod 755 "/bin"
+    	sudo chmod 777 "/usr/local"
+      	rm -rf "/usr/local/test"
+      	sudo chmod 755 "/usr/local"
 else 
-    rm -rf "/bin/test"
+    rm -rf "/usr/local/test"
 fi 
