@@ -54,7 +54,7 @@ int readInput(char *input, int length){
         return 1; 
     }
 }
-//Delete the spaces in a string
+//Delete the spaces of a string
 //Can be use to deal more easily with the user's input
 void deleteSpaces(char *input){
         int i;
@@ -171,7 +171,7 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 	//If we detect cp
 	else if(input[0]=='c' && input[1]=='p'){
 		
-		printf("mkdir detected\n");
+		printf("cp detected\n");
 		//There is no argument for this function
 		argument[0]='0';
 		argument[1]='0';
@@ -278,11 +278,36 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 	
 		return 0;
 	}
+	//If we detect touch
+	else if(input[0]=='t' && input[1]=='o' && input[2]=='u' && input[3]=='c' && input[4]=='h'){
+		strcpy(param2,"no param2");
+		printf("touch detected\n");
+		//There is no argument for this function
+		argument[0]='0';
+		argument[1]='0';
+		printf("before %s\n",input);
+		deleteMultipleSpaces(input);
+		printf("after %s\n",input);	
+
+		strcpy(command,"touch2");
+		int len=strlen(input);
+		if(len==5){
+			printf("not enough param\n");
+			return -1;
+		}
+		int i,j;
+		//We copy the parameter into param1, which is supposed to be a path or a file name
+		for(i=5,j=0;i<len;j++,i++){
+			param1[j]=input[i];
+		}
+		return 0;
+	}
 	//If the input is not a valid command
 	else{
 		return -1;
 	}
 }
+
 
 
 

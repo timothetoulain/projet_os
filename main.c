@@ -11,6 +11,7 @@
 #define ARRAY_SIZE 255
 //The constant PATH is the path to the directory where the functions are
 #define PATH "cmd_terminal/"
+//#define PATH "/bin/test/"
 
 
 int main(){

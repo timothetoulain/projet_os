@@ -1,6 +1,5 @@
 /*create a new directory
 * param1: name of the directory
-* param2(optionnal):mode
 */
 
 
