@@ -1,11 +1,15 @@
 #!/bin/bash
 #TODO replace cp by mv
-if [ $(stat -c "%a" "/usr/local") == "755" ] 
+
+destination=/usr/local
+source=cmd_terminal
+dirname=test
+if [ $(stat -c "%a" "$destination") == "755" ] 
 	then 
-    	sudo chmod 777 "/usr/local"
-      	cp -i -r "cmd_terminal" "/usr/local/test"
-      	sudo chmod 755 "/usr/local"
+    	sudo chmod 777 $destination
+      	cp -i -r "$source" "$destination/$dirname"
+      	sudo chmod 755 "$destination"
 else 
-	cp -i -r "cmd_terminal" "/usr/local/test"
+	cp -i -r "$source" "$destination/$dirname"
 
 fi 

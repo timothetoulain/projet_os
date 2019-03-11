@@ -1,10 +1,12 @@
 #!/bin/bash
+destination=/usr/local
+dirname=test
 
-if [ $(stat -c "%a" "/usr/local") == "755" ] 
+if [ $(stat -c "%a" "$destination") == "755" ] 
 	then 
-    	sudo chmod 777 "/usr/local"
-      	rm -rf "/usr/local/test"
-      	sudo chmod 755 "/usr/local"
+    	sudo chmod 777 "$destination"
+      	rm -rf "$destination/$dirname"
+      	sudo chmod 755 "$destination"
 else 
-    rm -rf "/usr/local/test"
+    rm -rf "$destination/$dirname"
 fi 
