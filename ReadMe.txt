@@ -20,9 +20,9 @@ Il faut voir pour eventuellement ajouter d'autres commandes et pour gérer l'asp
 Je suppose qu'il faut allouer un espace mémoire, mais la façon de le faire est assez flou pour moi.
 
 
-UPDATE: le script install.sh permet de copier le dossier cmd_terminal dans /bin/test afin que les commandes soit utilisables depuis n'importe où. (les noms de dossier seront changés par la suite)
-le script uninstall.sh permet de supprimer le dossier /bin/test.
-Pour permettre le deplacement et la suppression de repertoire dans /bin, on doit changer temporairement les permissions utilisateurs.
+UPDATE: le script install.sh permet de copier le dossier cmd_terminal dans /usr/local/test afin que les commandes soit utilisables depuis n'importe où. (les noms de dossier seront changés par la suite)
+le script uninstall.sh permet de supprimer le dossier /usr/local/test.
+Pour permettre le deplacement et la suppression de repertoire dans /usr/local, on doit changer temporairement les permissions utilisateurs.
 
 Rappel: executer script shell: -le rendre executable: chmod +x install.sh
                                 -l'executer: ./install.sh
