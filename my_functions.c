@@ -9,7 +9,8 @@
 #include"my_functions.h"
 #define BSIZE 512
 #define ARRAY_SIZE 80
-
+#define MAXLEN 500
+#define INDENT ' '
 
 //Determine if a path is a directory
 int isDirectory(const char *path) {
@@ -263,9 +264,7 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		printf("before %s\n",input);
 		deleteMultipleSpaces(input);
 		printf("after %s\n",input);
-
 		
-
 		strcpy(command,"cp2");
 		int len=strlen(input);
 		if(len==2){
@@ -328,9 +327,8 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 
 
 //int currentSize=0;
-int tree2(char *dirName, int level, int currentSize){
-	int MAXLEN=500;
-	int INDENT=3;
+void tree2(char *dirName, int level, int *currentSize){
+	
 	int i, nSpaces=level*INDENT;
 	DIR *curDir;
 	struct stat buf;
@@ -348,23 +346,22 @@ int tree2(char *dirName, int level, int currentSize){
 	//printf("%s\n",strcmp(dirName,".")?dirName:cwd);
 	while(cur=readdir(curDir)){
 		lstat(cur->d_name, &buf);
-		//stat(cur->d_name, &buf);
 		
 		/* display inode,name (and "/" if it's a directory */
-			currentSize+=(int)buf.st_size;
-			printf("size: %d %s\n",(int)buf.st_size,cur->d_name);
+		*currentSize=*currentSize+(int)buf.st_size;
+		//printf("size: %d %s\n",(int)buf.st_size,cur->d_name);
 
 			//printf("size: %d\n",currentSize);
 
 			//printf("(%d) %s\n",(int)buf.st_ino,cur->d_name);
 		if(S_ISDIR(buf.st_mode)&&strcmp(cur->d_name,".")&& strcmp(cur->d_name,"..")){
-			return tree2(cur->d_name,level+1,currentSize);
+			 tree2(cur->d_name,level+1,currentSize);
 			
 		}
 	}
 	closedir(curDir);
 	chdir("..");
-	return currentSize;
+	// currentSize;
 }
 
 
