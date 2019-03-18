@@ -6,12 +6,15 @@
 #include<dirent.h>
 #include<stdlib.h>
 #include<string.h>
-#include <sys/wait.h>
+#include<sys/wait.h>
 #include"my_functions.h"
 #define ARRAY_SIZE 255
+// 500Ko available
+#define STORAGE 500000
+
 //The constant PATH is the path to the directory where the functions are
-#define PATH "cmd_terminal/"
-//#define PATH "/usr/local/test/"
+//#define PATH "cmd_terminal/"
+#define PATH "/usr/local/command/"
 
 
 int main(){

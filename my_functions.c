@@ -144,62 +144,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 			return 0;
 		}
 	}
-	//If we detect mkdir
-	else if(input[0]=='m' && input[1]=='k' && input[2]=='d' && input[3]=='i' && input[4]=='r'){
-		//No second parameter expected
-		strcpy(param2,"no param2");
-		printf("mkdir detected\n");
-		//There is no argument for this function
-		argument[0]='0';
-		argument[1]='0';
-		deleteSpaces(input);
-		strcpy(command,"mkdir2");
-		int len=strlen(input);
-		if(len==5){
-			printf("not enough param\n");
-			//param1=NULL;
-			return -1;
-		}
-		int i,j;
-		//We copy the parameter into param1, which is supposed to be a path or directory name
-		for(i=5,j=0;i<len;j++,i++){
-			param1[j]=input[i];
-		}
-		return 0;
-	}
-	
-	//If we detect cp
-	else if(input[0]=='c' && input[1]=='p'){
-		
-		printf("cp detected\n");
-		//There is no argument for this function
-		argument[0]='0';
-		argument[1]='0';
-		printf("before %s\n",input);
-		deleteMultipleSpaces(input);
-		printf("after %s\n",input);
-
-		
-
-		strcpy(command,"cp2");
-		int len=strlen(input);
-		if(len==2){
-			printf("not enough param\n");
-			return -1;
-		}
-		char *sub;
-		sub = strtok(input," ");
-		sub = strtok(NULL," ");
-		strcpy(param1,sub);
-		sub = strtok(NULL," ");
-		strcpy(param2,sub);
-
-					printf("param1 %s\n",param1);
-					printf("param2 %s\n",param2);
-
-	
-		return 0;
-	}
 
 	//If we detect unlink
 	else if(input[0]=='u' && input[1]=='n' && input[2]=='l' && input[3]=='i' && input[4]=='n' && input[5]=='k'){
@@ -271,6 +215,10 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		sub = strtok(NULL," ");
 		strcpy(param1,sub);
 		sub = strtok(NULL," ");
+		if(sub==NULL){
+			printf("null arg2\n");
+			return -1;
+		}
 		strcpy(param2,sub);
 
 		printf("param1 %s\n",param1);
@@ -278,6 +226,71 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 	
 		return 0;
 	}
+
+//TODO
+/**************Check if storage is available******************/
+	//If we detect mkdir
+	else if(input[0]=='m' && input[1]=='k' && input[2]=='d' && input[3]=='i' && input[4]=='r'){
+		//No second parameter expected
+		strcpy(param2,"no param2");
+		printf("mkdir detected\n");
+		//There is no argument for this function
+		argument[0]='0';
+		argument[1]='0';
+		deleteSpaces(input);
+		strcpy(command,"mkdir2");
+		int len=strlen(input);
+		if(len==5){
+			printf("not enough param\n");
+			//param1=NULL;
+			return -1;
+		}
+		int i,j;
+		//We copy the parameter into param1, which is supposed to be a path or directory name
+		for(i=5,j=0;i<len;j++,i++){
+			param1[j]=input[i];
+		}
+		return 0;
+	}
+	
+	//If we detect cp
+	else if(input[0]=='c' && input[1]=='p'){
+		
+		printf("cp detected\n");
+		//There is no argument for this function
+		argument[0]='0';
+		argument[1]='0';
+		printf("before %s\n",input);
+		deleteMultipleSpaces(input);
+		printf("after %s\n",input);
+
+		
+
+		strcpy(command,"cp2");
+		int len=strlen(input);
+		if(len==2){
+			printf("not enough param\n");
+			return -1;
+		}
+		char *sub;
+		sub = strtok(input," ");
+		sub = strtok(NULL," ");
+		strcpy(param1,sub);
+		sub = strtok(NULL," ");
+		if(sub==NULL){
+			printf("null arg2\n");
+			return -1;
+		}
+		strcpy(param2,sub);
+
+		printf("param1 %s\n",param1);
+		printf("param2 %s\n",param2);
+
+	
+		return 0;
+	}
+
+	
 	//If we detect touch
 	else if(input[0]=='t' && input[1]=='o' && input[2]=='u' && input[3]=='c' && input[4]=='h'){
 		strcpy(param2,"no param2");
@@ -295,6 +308,7 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 			printf("not enough param\n");
 			return -1;
 		}
+		deleteSpaces(input);
 		int i,j;
 		//We copy the parameter into param1, which is supposed to be a path or a file name
 		for(i=5,j=0;i<len;j++,i++){

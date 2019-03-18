@@ -21,7 +21,7 @@ int main (int argc, char **argv){
  	}
  	else if(argc==2){
 		if (stat(argv[1], &info) == -1) {
-	  		int fd2 = open(argv[1], O_WRONLY | O_CREAT | O_EXCL,00644);
+	  		int fd2 = open(argv[1], O_WRONLY | O_CREAT | O_EXCL,00777);
 	  		if(fd2==-1){
 	  			perror(argv[1]);
 	  			exit(1);

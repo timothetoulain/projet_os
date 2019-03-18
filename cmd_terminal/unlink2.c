@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
 	  		}
 		}
 		else{
+			perror("Couldn't delete the file\n");
 			printf("file doesn't exist\n");
 			exit(1);
 		}

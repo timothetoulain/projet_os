@@ -1,6 +1,7 @@
 #!/bin/bash
+#TODO supprimer aussi l'espace mémoire accorder au logiciel
 destination=/usr/local
-dirname=test
+dirname=command
 
 if [ $(stat -c "%a" "$destination") == "755" ] 
 	then 
