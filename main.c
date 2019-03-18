@@ -43,7 +43,13 @@ int main(){
 			return 0;
 		}
 		else{
-			
+			char curDir[ARRAY_SIZE];
+			getcwd(curDir, ARRAY_SIZE);
+			printf("cwd= %s\n",curDir);
+			int currentSize=tree2("/home/toulain/Documents/L3/OS/projet",0,0);
+			getcwd(curDir, ARRAY_SIZE);
+			printf("cwd after= %s\n",curDir);
+			printf("size main: %d\n",currentSize);
 		    //If the input is a valid command
 		    if(analyseInput(input,command,argument,param1,param2)==0){
 				

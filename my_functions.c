@@ -327,6 +327,48 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 
 
 
+//int currentSize=0;
+int tree2(char *dirName, int level, int currentSize){
+	int MAXLEN=500;
+	int INDENT=3;
+	int i, nSpaces=level*INDENT;
+	DIR *curDir;
+	struct stat buf;
+	struct dirent *cur;
+	char cwd[MAXLEN];
+	chdir(dirName);
+	getcwd(cwd,MAXLEN);
+	curDir=opendir(".");
+	if(!curDir){
+		perror("opendir failed\n");
+		exit(1);
+	}
+	for(i=0;i<nSpaces;i++) 
+		putchar(' ');
+	//printf("%s\n",strcmp(dirName,".")?dirName:cwd);
+	while(cur=readdir(curDir)){
+		lstat(cur->d_name, &buf);
+		//stat(cur->d_name, &buf);
+		
+		/* display inode,name (and "/" if it's a directory */
+			currentSize+=(int)buf.st_size;
+			printf("size: %d %s\n",(int)buf.st_size,cur->d_name);
+
+			//printf("size: %d\n",currentSize);
+
+			//printf("(%d) %s\n",(int)buf.st_ino,cur->d_name);
+		if(S_ISDIR(buf.st_mode)&&strcmp(cur->d_name,".")&& strcmp(cur->d_name,"..")){
+			return tree2(cur->d_name,level+1,currentSize);
+			
+		}
+	}
+	closedir(curDir);
+	chdir("..");
+	return currentSize;
+}
+
+
+
 
 
 
@@ -541,84 +583,6 @@ void my_move(char *filename,char *destination){
 
 
 
-
-//attempt do program "copy directory" function
-//not working
-
-int MAXLEN=15;
-int INDENT=3;
-void copy_dir(char *source, char *destination){
-	my_mkdir(destination);
-	char my_cwd[ARRAY_SIZE];
-	strcpy(my_cwd,getcwd(my_cwd, sizeof(my_cwd)));
-	insertCharSlash(destination);
-	strcat(my_cwd,destination);
-	tree(source,my_cwd);
-}
-char tmp_name[ARRAY_SIZE];
-char *sub;
-char tmp_desti[ARRAY_SIZE];
-
-void tree(char *dirName, char *destination){
-	printf("destination debut: %s\n",destination);
-	memset(tmp_name,0,ARRAY_SIZE);
-	int counter =0;
-	DIR *curDir;
-	struct stat buf;
-	struct dirent *cur;
-	char cwd[MAXLEN];
-	chdir(dirName);
-	getcwd(cwd,MAXLEN);
-	curDir=opendir(".");
-	if(!curDir){
-		perror("opendir failed\n");
-		exit(1);
-	}
-	//printf("we are in %s\n",strcmp(dirName,".")?dirName:cwd);
-	while(cur=readdir(curDir)){
-		lstat(cur->d_name, &buf);
-
-		/* display inode,name (and "/" if it's a directory */
-		if(!S_ISDIR(buf.st_mode)){
-			strcpy(tmp_name,cur->d_name);
-			
-			insertCharSlash(tmp_name);
-
-			int len=strlen(tmp_name);
-			strcat(destination,tmp_name);
-			printf("conca desti:%s\n",destination);
-			int lenDest=strlen(destination);
-			my_cp(cur->d_name,destination);
-			deleteNCar(destination,lenDest,len);
-			
-		}
-		if(S_ISDIR(buf.st_mode)&&strcmp(cur->d_name,".")&& strcmp(cur->d_name,"..")){
-			memset(tmp_name,0,ARRAY_SIZE);
-			memset(tmp_desti,0,ARRAY_SIZE);
-
-			//counter++;
-			printf("directory detected\n");
-				strcpy(tmp_name,destination);
-				strcpy(tmp_desti,cur->d_name);
-
-				insertCharSlash(tmp_desti);
-				strcat(tmp_name,tmp_desti);
-				printf("makedir %s\n",tmp_name);
-				my_mkdir(tmp_name);
-
-			/*if(counter>1)*/ 
-			//insertCharPrev(destination);
-			//strcpy(cur->d_name,tmp_name);
-			printf("bef recursion: %s   %s\n",cur->d_name,destination);
-			tree(cur->d_name,destination);
-			/*insertCharSlash(tmp_name);
-			strcat(destination,tmp_name);
-			tree(cur->d_name,destination);*/
-		}
-	}
-	closedir(curDir);
-	chdir("..");
-}
 void insertCharPrev(char *buf){
 	printf("before %s\n",buf);
 	int i, j=0;

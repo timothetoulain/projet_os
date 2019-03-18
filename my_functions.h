@@ -13,7 +13,6 @@ void my_mkdir(char *dirname);
 int my_cp(char *source, char *destination);
 void my_ls(int l, char *path);
 void my_move(char *filename,char *destination);
-void tree(char *dirName, char *destination);
 
 void copy_dir(char *source, char *destination);
 void insertCharPrev(char *buf);
@@ -25,6 +24,7 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 void deleteSpaces(char *input);
 int readInput(char *input, int length);
 void deleteMultipleSpaces(char *str);
+int tree2(char *dirName, int level, int currentSize);
 
 
 
