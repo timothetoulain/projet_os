@@ -10,12 +10,11 @@
 #include"my_functions.h"
 #define ARRAY_SIZE 255
 // 500Ko available
-#define STORAGE 500000
+const int storage=500000;
 
 //The constant PATH is the path to the directory where the functions are
 //#define PATH "cmd_terminal/"
 #define PATH "/usr/local/command/"
-
 
 int main(){
 	char argument[3];
@@ -56,7 +55,7 @@ int main(){
 
 			printf("size main: %d\n",currentSize);
 		    //If the input is a valid command
-		    if(analyseInput(input,command,argument,param1,param2)==0){
+		    if(analyseInput(input,command,argument,param1,param2,currentSize)==0){
 				
 				strcat(path,command);
 				//path contains the path to the directory that contains the functions
@@ -83,6 +82,13 @@ int main(){
 					}
 					exit(0);
 				}
+			}
+			else if(analyseInput(input,command,argument,param1,param2,currentSize)==-2){
+				printf("Operation impossible, not enough storage available\n");
+			}
+			else if(analyseInput(input,command,argument,param1,param2,currentSize)==-3){
+				//maybe not a file?
+				printf("Problem with the first argument\n");
 			}
 			else{
 				printf("Unknown command\n");

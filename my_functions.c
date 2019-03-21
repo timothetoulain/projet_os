@@ -11,6 +11,7 @@
 #define ARRAY_SIZE 80
 #define MAXLEN 500
 #define INDENT ' '
+extern int storage;
 
 //Determine if a path is a directory
 int isDirectory(const char *path) {
@@ -69,7 +70,7 @@ void deleteSpaces(char *input){
 }
 
 //Analyse the input
-int analyseInput(char *input,char *command, char *argument,char *param1,char *param2){
+int analyseInput(char *input,char *command, char *argument,char *param1,char *param2, int currentSize){
 	//if we recognise the "ls" command
 	if(input[0]=='l' && input[1]=='s'){
 
@@ -228,35 +229,42 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		return 0;
 	}
 
-//TODO
-/**************Check if storage is available******************/
+
+/**************Check if storage is available for the following operations*****************/
+
 	//If we detect mkdir
 	else if(input[0]=='m' && input[1]=='k' && input[2]=='d' && input[3]=='i' && input[4]=='r'){
-		//No second parameter expected
-		strcpy(param2,"no param2");
-		printf("mkdir detected\n");
-		//There is no argument for this function
-		argument[0]='0';
-		argument[1]='0';
-		deleteSpaces(input);
-		strcpy(command,"mkdir2");
-		int len=strlen(input);
-		if(len==5){
-			printf("not enough param\n");
-			//param1=NULL;
-			return -1;
+		//We need 4096 octets to create a directory
+		if(currentSize<=storage-4096){	
+			//No second parameter expected
+			strcpy(param2,"no param2");
+			printf("mkdir detected\n");
+			//There is no argument for this function
+			argument[0]='0';
+			argument[1]='0';
+			deleteSpaces(input);
+			strcpy(command,"mkdir2");
+			int len=strlen(input);
+			if(len==5){
+				printf("not enough param\n");
+				//param1=NULL;
+				return -1;
+			}
+			int i,j;
+			//We copy the parameter into param1, which is supposed to be a path or directory name
+			for(i=5,j=0;i<len;j++,i++){
+				param1[j]=input[i];
+			}
+			return 0;
 		}
-		int i,j;
-		//We copy the parameter into param1, which is supposed to be a path or directory name
-		for(i=5,j=0;i<len;j++,i++){
-			param1[j]=input[i];
+		else{
+			return -2;
 		}
-		return 0;
 	}
 	
 	//If we detect cp
 	else if(input[0]=='c' && input[1]=='p'){
-		
+		struct stat buf;
 		printf("cp detected\n");
 		//There is no argument for this function
 		argument[0]='0';
@@ -284,36 +292,53 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 
 		printf("param1 %s\n",param1);
 		printf("param2 %s\n",param2);
-
+		if(stat(param1,&buf) != 0) { 
+		      printf("error!\n" ); 
+		      return -3; 
+		} 
+ 
+   		printf("size %s= %d\n",param1,buf.st_size); 
+   		//We calculate the size of param1 to know if there is enough space to copy it
+   		if(buf.st_size<=storage-currentSize){
+			return 0;
+   		}
+   		else{
+   			return -2;
+   		}
 	
-		return 0;
 	}
 
 	
 	//If we detect touch
 	else if(input[0]=='t' && input[1]=='o' && input[2]=='u' && input[3]=='c' && input[4]=='h'){
-		strcpy(param2,"no param2");
-		printf("touch detected\n");
-		//There is no argument for this function
-		argument[0]='0';
-		argument[1]='0';
-		printf("before %s\n",input);
-		deleteMultipleSpaces(input);
-		printf("after %s\n",input);	
+		//We need at least one octet to create a file
+		if(currentSize<=storage-1){	
+			strcpy(param2,"no param2");
+			printf("touch detected\n");
+			//There is no argument for this function
+			argument[0]='0';
+			argument[1]='0';
+			printf("before %s\n",input);
+			deleteMultipleSpaces(input);
+			printf("after %s\n",input);	
 
-		strcpy(command,"touch2");
-		int len=strlen(input);
-		if(len==5){
-			printf("not enough param\n");
-			return -1;
+			strcpy(command,"touch2");
+			int len=strlen(input);
+			if(len==5){
+				printf("not enough param\n");
+				return -1;
+			}
+			deleteSpaces(input);
+			int i,j;
+			//We copy the parameter into param1, which is supposed to be a path or a file name
+			for(i=5,j=0;i<len;j++,i++){
+				param1[j]=input[i];
+			}
+			return 0;
 		}
-		deleteSpaces(input);
-		int i,j;
-		//We copy the parameter into param1, which is supposed to be a path or a file name
-		for(i=5,j=0;i<len;j++,i++){
-			param1[j]=input[i];
+		else{
+			return -2;
 		}
-		return 0;
 	}
 	//If the input is not a valid command
 	else{
@@ -325,8 +350,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 
 
 
-
-//int currentSize=0;
 void tree2(char *dirName, int level, int *currentSize){
 	
 	int i, nSpaces=level*INDENT;
@@ -347,7 +370,6 @@ void tree2(char *dirName, int level, int *currentSize){
 	while(cur=readdir(curDir)){
 		lstat(cur->d_name, &buf);
 		
-		/* display inode,name (and "/" if it's a directory */
 		*currentSize=*currentSize+(int)buf.st_size;
 		//printf("size: %d %s\n",(int)buf.st_size,cur->d_name);
 
@@ -361,8 +383,23 @@ void tree2(char *dirName, int level, int *currentSize){
 	}
 	closedir(curDir);
 	chdir("..");
-	// currentSize;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
