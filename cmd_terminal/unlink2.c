@@ -1,4 +1,5 @@
-/* delete a file
+/* 
+* delete a file
 * param1: name of the file
 */
 
@@ -13,11 +14,14 @@
 
 int main(int argc, char *argv[]){
 	struct stat info;
+
+	/* the parameter is mandatory*/
 	if(argc==1){
  		printf("missing parameter\n");
  		exit(1);
  	}
  	else if(argc==2){
+ 		/* check if the file exists*/
 		if (stat(argv[1], &info) ==0) {
 	  		int status=unlink(argv[1]);
 	  		if(status!=0){
@@ -25,9 +29,9 @@ int main(int argc, char *argv[]){
 	  			exit(1);
 	  		}
 		}
+		/*if the file doesn't exist*/
 		else{
 			perror("Couldn't delete the file\n");
-			printf("file doesn't exist\n");
 			exit(1);
 		}
 	}

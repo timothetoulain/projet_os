@@ -1,4 +1,5 @@
-/*create a new file
+/*
+* create a new file
 * param1: name of the file
 */
 
@@ -12,14 +13,15 @@
 #include <errno.h>
 
 int main (int argc, char **argv){
-	printf("touch function\n");
-	int res;
 	struct stat info;
+
+	/* the parameter is mandatory*/
  	if(argc==1){
  		printf("missing parameter\n");
  		exit(1);
  	}
  	else if(argc==2){
+ 		/* check if the file doesn't already exist*/
 		if (stat(argv[1], &info) == -1) {
 	  		int fd2 = open(argv[1], O_WRONLY | O_CREAT | O_EXCL,00777);
 	  		if(fd2==-1){

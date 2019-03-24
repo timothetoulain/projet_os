@@ -1,4 +1,5 @@
-/* delete a directory
+/*
+* delete a directory
 * param1: name of the directory
 */
 
@@ -12,15 +13,16 @@
 #include <errno.h>
 
 int main (int argc, char **argv){
-	int res;
 	struct stat info;
+	/* the parameter is mandatory*/
  	if(argc==1){
  		printf("missing parameter\n");
  		exit(1);
  	}
  	else if(argc==2){
+ 		/* check if the directory exists*/
 		if (stat(argv[1], &info) == 0) {
-			//we check if the mode allows us to delete
+			/* check if the mode allows us to delete*/
 			char mode[1];
 			mode[0]=((info.st_mode & S_IWUSR) ? '-' : 'w');
 			if(strcmp(mode,"-")==0){
