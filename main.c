@@ -9,11 +9,10 @@
 #include<sys/wait.h>
 #include"my_functions.h"
 #define ARRAY_SIZE 255
-// 500Ko available
-const int storage=500000;
+// 800Ko available
+const int storage=800000;
 
 //The constant PATH is the path to the directory where the functions are
-//#define PATH "cmd_terminal/"
 #define PATH "/usr/local/command/"
 
 int main(){

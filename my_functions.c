@@ -198,18 +198,15 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 	//If we detect move
 	else if(input[0]=='m' && input[1]=='v'){
 		
-		printf("move detected\n");
 		//There is no argument for this function
 		argument[0]='0';
 		argument[1]='0';
-		printf("before %s\n",input);
-		deleteMultipleSpaces(input);
-		printf("after %s\n",input);	
+		deleteMultipleSpaces(input);	
 
-		strcpy(command,"mv2");
+		//strcpy(command,"mv2");
 		int len=strlen(input);
 		if(len==2){
-			printf("not enough param\n");
+			printf("Not enough param\n");
 			return -1;
 		}
 		char *sub;
@@ -225,12 +222,19 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 
 		printf("param1 %s\n",param1);
 		printf("param2 %s\n",param2);
+		if(isDirectory(param1)){
+			printf("dir detected, c++ program\n");
+			strcpy(command,"mvdir");
+		}
+		else{
+			strcpy(command,"mv2");
+		}	
 	
 		return 0;
 	}
 
 
-/**************Check if storage is available for the following operations*****************/
+/**************We need to check if storage is available for the following operations*****************/
 
 	//If we detect mkdir
 	else if(input[0]=='m' && input[1]=='k' && input[2]=='d' && input[3]=='i' && input[4]=='r'){
@@ -238,7 +242,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		if(currentSize<=storage-4096){	
 			//No second parameter expected
 			strcpy(param2,"no param2");
-			printf("mkdir detected\n");
 			//There is no argument for this function
 			argument[0]='0';
 			argument[1]='0';
@@ -273,7 +276,7 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		deleteMultipleSpaces(input);
 		printf("after %s\n",input);
 		
-		strcpy(command,"cp2");
+		//strcpy(command,"cp2");
 		int len=strlen(input);
 		if(len==2){
 			printf("not enough param\n");
@@ -292,6 +295,15 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 
 		printf("param1 %s\n",param1);
 		printf("param2 %s\n",param2);
+		if(isDirectory(param1)){
+			printf("dir detected, c++ program\n");
+			strcpy(command,"cpdir");
+		}
+		else{
+			strcpy(command,"cp2");
+		}	
+
+
 		if(stat(param1,&buf) != 0) { 
 		      printf("error!\n" ); 
 		      return -3; 
@@ -369,8 +381,9 @@ void tree2(char *dirName, int level, int *currentSize){
 	//printf("%s\n",strcmp(dirName,".")?dirName:cwd);
 	while(cur=readdir(curDir)){
 		lstat(cur->d_name, &buf);
-		
-		*currentSize=*currentSize+(int)buf.st_size;
+		if((strcmp(cur->d_name,"..")!=0) && (strcmp(cur->d_name,".")!=0)){
+			*currentSize=*currentSize+(int)buf.st_size;
+		}
 		//printf("size: %d %s\n",(int)buf.st_size,cur->d_name);
 
 			//printf("size: %d\n",currentSize);
