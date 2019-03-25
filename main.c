@@ -43,14 +43,11 @@ int main(){
 		else{
 			char curDir[ARRAY_SIZE];
 			getcwd(curDir, ARRAY_SIZE);
-			printf("cwd= %s\n",curDir);
 			
 			int currentSize=0;
-			tree2(curDir,0,&currentSize);
+			calculateSize(curDir,0,&currentSize);
 			chdir(curDir);
 			getcwd(curDir, ARRAY_SIZE);
-
-			printf("cwd after= %s\n",curDir);
 
 			printf("size main: %d\n",currentSize);
 		    //If the input is a valid command
@@ -82,12 +79,22 @@ int main(){
 					exit(0);
 				}
 			}
+
+			else if(analyseInput(input,command,argument,param1,param2,currentSize)==-1){
+				printf("Not a valid path\n");
+			}
 			else if(analyseInput(input,command,argument,param1,param2,currentSize)==-2){
 				printf("Operation impossible, not enough storage available\n");
 			}
 			else if(analyseInput(input,command,argument,param1,param2,currentSize)==-3){
 				//maybe not a file?
 				printf("Problem with the first argument\n");
+			}
+			else if(analyseInput(input,command,argument,param1,param2,currentSize)==-4){
+				printf("Not enough arguments\n");
+			}
+			else if(analyseInput(input,command,argument,param1,param2,currentSize)==-5){
+				printf("Too many arguments\n");
 			}
 			else{
 				printf("Unknown command\n");

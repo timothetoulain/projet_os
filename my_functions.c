@@ -10,7 +10,6 @@
 #define BSIZE 512
 #define ARRAY_SIZE 80
 #define MAXLEN 500
-#define INDENT ' '
 extern int storage;
 
 //Determine if a path is a directory
@@ -105,7 +104,7 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 					//We check if param1 is a directory
 					int status=isDirectory(param1);
 					if(status!=1){
-						printf("not a valid path -l\n");
+						//Not a valid path
 						return -1;
 					}
 					else{
@@ -127,7 +126,7 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 				//We check if it's a directory
 				int status=isDirectory(param1);
 				if(status!=1){
-					printf("not a valid path\n");
+					//Not a valid path
 					return -1;
 				}
 				else{
@@ -159,9 +158,8 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		strcpy(command,"unlink2");
 		int len=strlen(input);
 		if(len==6){
-			printf("not enough param\n");
-			//param1=NULL;
-			return -1;
+			//Not enough parameters
+			return -4;
 		}
 		int i,j;
 		//We copy the parameter into param1, which is supposed to be a path or directory name
@@ -169,6 +167,28 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 			param1[j]=input[i];
 		}
 		return 0;
+	}
+
+	//sizemem detected
+	else if(input[0]=='s' && input[1]=='i' && input[2]=='z' && input[3]=='e' 
+		&& input[4]=='m' && input[5]=='e'&& input[6]=='m'){
+		//No second parameter expected
+		strcpy(param2,"no param2");
+		printf("sizemem detected\n");
+		//There is no argument for this function
+		argument[0]='0';
+		argument[1]='0';
+		deleteSpaces(input);
+		strcpy(command,"sizemem");
+		int len=strlen(input);
+		if(len==7){
+			param1=NULL;
+			return 0;
+		}
+		else{
+			//Too many parameters
+			return -5;
+		}
 	}
 
 	//If we detect rmdir
@@ -183,9 +203,8 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		strcpy(command,"rmdir2");
 		int len=strlen(input);
 		if(len==5){
-			printf("not enough param\n");
-			//param1=NULL;
-			return -1;
+			//not enough parameters
+			return -4;
 		}
 		int i,j;
 		//We copy the parameter into param1, which is supposed to be a path or directory name
@@ -206,8 +225,8 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		//strcpy(command,"mv2");
 		int len=strlen(input);
 		if(len==2){
-			printf("Not enough param\n");
-			return -1;
+			//Not enough parameters
+			return -4;
 		}
 		char *sub;
 		sub = strtok(input," ");
@@ -215,8 +234,8 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		strcpy(param1,sub);
 		sub = strtok(NULL," ");
 		if(sub==NULL){
-			printf("null arg2\n");
-			return -1;
+			//Not enough parameters
+			return -4;
 		}
 		strcpy(param2,sub);
 
@@ -249,9 +268,8 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 			strcpy(command,"mkdir2");
 			int len=strlen(input);
 			if(len==5){
-				printf("not enough param\n");
-				//param1=NULL;
-				return -1;
+				//Not enough parameters
+				return -4;
 			}
 			int i,j;
 			//We copy the parameter into param1, which is supposed to be a path or directory name
@@ -279,8 +297,8 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		//strcpy(command,"cp2");
 		int len=strlen(input);
 		if(len==2){
-			printf("not enough param\n");
-			return -1;
+			//Not enough parameters
+			return -4;
 		}
 		char *sub;
 		sub = strtok(input," ");
@@ -288,8 +306,8 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		strcpy(param1,sub);
 		sub = strtok(NULL," ");
 		if(sub==NULL){
-			printf("null arg2\n");
-			return -1;
+			//Not enough parameters
+			return -4;
 		}
 		strcpy(param2,sub);
 
@@ -303,13 +321,12 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 			strcpy(command,"cp2");
 		}	
 
-
 		if(stat(param1,&buf) != 0) { 
 		      printf("error!\n" ); 
 		      return -3; 
 		} 
  
-   		printf("size %s= %d\n",param1,buf.st_size); 
+   		printf("size %s= %ld\n",param1,buf.st_size); 
    		//We calculate the size of param1 to know if there is enough space to copy it
    		if(buf.st_size<=storage-currentSize){
 			return 0;
@@ -337,8 +354,8 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 			strcpy(command,"touch2");
 			int len=strlen(input);
 			if(len==5){
-				printf("not enough param\n");
-				return -1;
+				//Not enough parameters
+				return -4;
 			}
 			deleteSpaces(input);
 			int i,j;
@@ -354,17 +371,15 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 	}
 	//If the input is not a valid command
 	else{
-		return -1;
+		return -6;
 	}
 }
 
 
 
-
-
-void tree2(char *dirName, int level, int *currentSize){
+void calculateSize(char *dirName, int level, int *currentSize){
 	
-	int i, nSpaces=level*INDENT;
+	int i;
 	DIR *curDir;
 	struct stat buf;
 	struct dirent *cur;
@@ -376,292 +391,16 @@ void tree2(char *dirName, int level, int *currentSize){
 		perror("opendir failed\n");
 		exit(1);
 	}
-	for(i=0;i<nSpaces;i++) 
-		putchar(' ');
-	//printf("%s\n",strcmp(dirName,".")?dirName:cwd);
 	while(cur=readdir(curDir)){
 		lstat(cur->d_name, &buf);
 		if((strcmp(cur->d_name,"..")!=0) && (strcmp(cur->d_name,".")!=0)){
 			*currentSize=*currentSize+(int)buf.st_size;
 		}
-		//printf("size: %d %s\n",(int)buf.st_size,cur->d_name);
-
-			//printf("size: %d\n",currentSize);
-
-			//printf("(%d) %s\n",(int)buf.st_ino,cur->d_name);
 		if(S_ISDIR(buf.st_mode)&&strcmp(cur->d_name,".")&& strcmp(cur->d_name,"..")){
-			 tree2(cur->d_name,level+1,currentSize);
-			
+			 calculateSize(cur->d_name,level+1,currentSize);
 		}
 	}
 	closedir(curDir);
 	chdir("..");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/************************ The functions below are meant to be used in C program, not on the command line****************/
-
-
-/* delete a file
-* param1: name of the file
-*/
-void my_unlink(char *filename){
-	struct stat info;
-	if (stat(filename, &info) ==0) {
-  		int status=unlink(filename);
-  		if(status!=0){
-  			perror(filename);
-  			return;
-  		}
-	}
-	else{
-		perror(filename);
-		return;
-	}
-} 
-
-/* delete a directory
-* param1: name of the directory
-*/
-void my_rmdir (char *filename){
-	int res;
-	struct stat info;
-	if (stat(filename, &info) == 0) {
-		//we check if the mode allows us to delete
-		char mode[1];
-		mode[0]=((info.st_mode & S_IWUSR) ? '-' : 'w');
-		if(strcmp(mode,"-")==0){
-			int status=rmdir(filename);
-	  		if(status!=0){
-	  			perror("Couldn't remove the directory\n");
-	  			return;
-	  		}
-		}
-		else{
-			perror("permission denied\n");
-			return;
-		}
-	}
-	else{
-		perror(filename);
-		return;
-	}
-}
-
-
-/*create a new directory
-* param1: name of the directory
-*/
-void my_mkdir(char *dirname){
-	int res;
-	struct stat info;
- 		
-	if (stat(dirname, &info) == -1) {
-  		int status=mkdir(dirname, 0700);
-  		if(status!=0){
-  			perror(dirname);
-  			return;
-  		}
-	}
-	else{
-		printf("Directory already exists\n");
-		return;
-	}
-}
-
-/*copy content from a file  into another non existing*/
-int my_cp(char *source, char *destination) {
-	int fd1, fd2; /* descriptors for the files */
-	int count; /* nb of octets by transfert */
-	char buf[BSIZE]; /* transfert buffer */
-	char nameFileCopied[ARRAY_SIZE];
-	memset(buf,0,BSIZE);
-	memset(nameFileCopied,0,ARRAY_SIZE);
-	
-	fd1 = open(source, O_RDONLY);
-	if (fd1==-1) { /* impossible to open source */
-		perror(source);
-		return 1;
-	}
-	strcpy(nameFileCopied,destination);
-
-	if(isDirectory(destination)){
-		printf("is dir\n");
-		if(strstr(destination,"../")!=NULL || strstr(destination,"./")!=NULL ){
-			printf("test\n");
-			char *sub;
-			char temp[ARRAY_SIZE];
-			sub = strtok(source,"/");
-			while(sub!=NULL){
-				strcpy(temp,sub);
-				sub = strtok(NULL,"/");
-			}
-			printf("fin while: %s\n",temp);
-			strcat(nameFileCopied,temp);
-		}
-		else{
-			strcat(nameFileCopied,"/");
-			strcat(nameFileCopied,source);
-		}
-	}
-	printf("file: %s\n",nameFileCopied);
-
-	/* ouverture second fichier ssi il n’existe pas */
-	fd2 = open(nameFileCopied, O_WRONLY | O_CREAT | O_EXCL,00644);
-	if (fd2==-1) { /* ouverture destination impossible */
-		perror(nameFileCopied);
-		close(fd1);
-		return 3;
-	}
-	/* lecture/ecriture par blocs de BSIZE octets */
-	/* on s’arrete au premier bloc incomplet (EOF de source) */
-	do {
-		count = read(fd1,buf, BSIZE);
-		write(fd2,buf, count);
-	} while (count==BSIZE);
-	
-	/* fermeture des deux fichiers */
-	close(fd1);
-	close(fd2);
-	return 0;
-}
-
-/*display information on file and directory
-*param1: indicates if we want a long listing format: 0 for no, 1 for yes
-*		(same than ls -l)
-*param2: path of the directory to explore: can be NULL
-*/
-void my_ls(int l, char *path) {
-	DIR * curDir;
-	struct dirent * cur;
-	struct stat buf;
-	int full = 0;
-	if (l== 1 ) {
-		full = 1;
-	}
-	/* opening of the chosen directory */
-	if (path!=NULL) {
-		chdir(path);
-	}
-	curDir = opendir(".");
-	if (!curDir) {
-		perror("impossible to open");
-		
-		return;
-	}
-	/* browse the entries of the directory */
-	while (1) {
-		/* get entry of the current directory */
-		cur = readdir(curDir);
-		/* end of the directory, we quit */
-		if (!cur) break;
-
-		/* read attributs of the current file */
-		stat(cur->d_name, &buf);
-		if (!full) {
-		/* display inode,name (and "/" if it's a directory */
-			printf("(%d) %s",(int)buf.st_ino,cur->d_name);
-			if (S_ISDIR(buf.st_mode)) {
-				puts("/");
-			}
-			else putchar('\n');
-		} 
-		else {
-			/* display like 'ls -l'
-			* type, permissions, nb links, size, name
-			*/
-			printf("%c%c%c%c%c%c%c%c%c%c ",
-			S_ISDIR(buf.st_mode) ?  'd' : '-',
-			buf.st_mode & S_IRUSR ? 'r' : '-',
-			buf.st_mode & S_IWUSR ? 'w' : '-',
-			buf.st_mode & S_IXUSR ? 'x' : '-',
-			buf.st_mode & S_IRGRP ? 'r' : '-',
-			buf.st_mode & S_IWGRP ? 'w' : '-',
-			buf.st_mode & S_IXGRP ? 'x' : '-',
-			buf.st_mode & S_IROTH ? 'r' : '-',
-			buf.st_mode & S_IWOTH ? 'w' : '-',
-			buf.st_mode & S_IXOTH ? 'x' : '-');
-			printf("%3ld %10ld %s\n",
-			buf.st_nlink,
-			(long)buf.st_size,
-			cur->d_name);
-		}
-	}
-	closedir(curDir);
-}
-
-/* move or rename a file
-* param1: name of file to move/rename
-* param2: new name for the file or destination
-*/
-void my_move(char *filename,char *destination){
-	char temp[ARRAY_SIZE];
-	strcpy(temp,filename);
-	int status=my_cp(filename, destination);
-	if(status==0){
-		unlink(temp);
-	}
-}
-
-
-
-void insertCharPrev(char *buf){
-	printf("before %s\n",buf);
-	int i, j=0;
-	for(i=0;i<3;i++){
-		for(int j=ARRAY_SIZE-2;j>=0;j--){
-			buf[j+1]=buf[j];
-		}
-	}
-	buf[0]='.';
-	buf[1]='.';
-	buf[2]='/';
-
-	printf("after %s\n",buf);
-}
-
-void insertCharSlash(char *buf){
-	printf("before slash %s\n",buf);
-	int i, j=0;
-		for(int j=ARRAY_SIZE-2;j>=0;j--){
-			buf[j+1]=buf[j];
-		}
-	buf[0]='/';
-
-	printf("after slash %s\n",buf);
-}
-void deleteNCar(char *destination,int lenDest,int len){
-	int i;
-	printf("before delete %s\n",destination);
-	for(i=lenDest;i>=lenDest-len;i--){
-		destination[i]='\0';
-
-	} 
-	printf("after delete %s\n",destination);
-
-}
