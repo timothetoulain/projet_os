@@ -1,3 +1,14 @@
+/**
+* \file my_functions.c
+* \brief Run commands
+* \author BERANGER Claire (50%) - TOULAIN Timothe (50%)
+* \version 6
+* \date 28 march 2019
+*
+* Program to traduce and run commands of main program
+* Commands ls, cp, mkdir, rmdir, touch, unlink, mv, cpdir et size are traduce with analyseInput function
+*
+*/
 #include<stdio.h>
 #include<unistd.h>
 #include<sys/types.h>
@@ -12,7 +23,12 @@
 #define MAXLEN 500
 extern int storage;
 
-//Determine if a path is a directory
+/**
+* \fn int isDirectory(const char *path)
+* \brief Determine if a path is a directory
+* \param path 
+* \return S_ISDIR(statbuf.st_mode)
+*/
 int isDirectory(const char *path) {
    struct stat statbuf;
    if (stat(path, &statbuf) != 0)
@@ -20,27 +36,33 @@ int isDirectory(const char *path) {
    return S_ISDIR(statbuf.st_mode);
 }
 
-//Replace multiple spaces by a single space
+/**
+* \fn void deleteMultipleSpaces(char *str)
+* \brief Replace multiple spaces by a single space
+* \param str character string
+*/
 void deleteMultipleSpaces(char *str){
     char *dest = str;  /* Destination to copy to */
 
     /* While we're not at the end of the string, loop... */
     while (*str != '\0'){
-        /* Loop while the current character is a space, AND the next
-         * character is a space
-         */
+        /* Loop while the current character is a space, AND the next character is a space */
         while (*str == ' ' && *(str + 1) == ' ')
             str++;  /* Just skip to next character */
-       /* Copy from the "source" string to the "destination" string,
-        * while advancing to the next character in both
-        */
+       /* Copy from the "source" string to the "destination" string, while advancing to the next character in both */
        *dest++ = *str++;
     }
     /* Make sure the string is properly terminated */    
     *dest = '\0';
 }
 
-//Read the input on the command line 
+/**
+* \fn int readInput(char *input, int length)
+* \brief Read the input on the command line 
+* \param input character string contain command name
+* \param length int contain length of command name
+* \return boolean
+*/
 int readInput(char *input, int length){
     char *position = NULL;
     // We read on the standard input
@@ -55,8 +77,12 @@ int readInput(char *input, int length){
         return 1; 
     }
 }
-//Delete the spaces of a string
-//Can be use to deal more easily with the user's input
+
+/**
+* \fn void deleteSpaces(char *input)
+* \brief Delete the spaces of a string. Can be use to deal more easily with the user's input
+* \param input character string contain command name
+*/
 void deleteSpaces(char *input){
         int i;
 		int j = -1;
@@ -68,7 +94,17 @@ void deleteSpaces(char *input){
 		input[++j] = '\0';
 }
 
-//Analyse the input
+/**
+* \fn int analyseInput(char *input,char *command, char *argument,char *param1,char *param2, int currentSize)
+* \brief Analyse the input
+* \param input character string
+* \param command character string
+* \param argument character string
+* \param param1 character string
+* \param param2 character string
+* \param currentSize int
+* \return int if it's 0 the command is launch else a error message is returned in the main program
+*/
 int analyseInput(char *input,char *command, char *argument,char *param1,char *param2, int currentSize){
 	//if we recognise the "ls" command
 	if(input[0]=='l' && input[1]=='s'){
@@ -375,8 +411,13 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 	}
 }
 
-
-
+/**
+* \fn void calculateSize(char *dirName, int level, int *currentSize)
+* \brief Calcule size of dir recursively
+* \param dirName character string
+* \param level int
+* \param currentSize int
+*/
 void calculateSize(char *dirName, int level, int *currentSize){
 	
 	int i;

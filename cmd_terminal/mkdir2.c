@@ -1,8 +1,13 @@
-/*
-* create a new directory
-* param1: name of the directory
+/**
+* \file mkdir2.c
+* \brief Create directory
+* \author BERANGER Claire (50%) - TOULAIN Timothe (50%)
+* \version 6
+* \date 28 march 2019
+*
+* Program to make a new directory : Command mkdir
+*
 */
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -11,7 +16,13 @@
 #include <stdlib.h>
 #include<string.h>
 #include <errno.h>
-
+/**
+* \fn int main(int argc, char** argv)
+* \brief Main program to create a new directory
+* \param argc name of new directory
+* \param argv destination file (not existing)
+* \return int : 0 if mkdir done else return an error
+*/
 int main (int argc, char **argv){
 	struct stat info;
 	/* the parameter is mandatory*/

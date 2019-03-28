@@ -1,8 +1,13 @@
-/*
-* delete a directory
-* param1: name of the directory
+/**
+* \file rmdir2.c
+* \brief Remove directory
+* \author BERANGER Claire (50%) - TOULAIN Timothe (50%)
+* \version 6
+* \date 28 march 2019
+*
+* Program to remove directory : Command rmdir
+*
 */
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -12,6 +17,13 @@
 #include<string.h>
 #include <errno.h>
 
+/**
+* \fn int main(int argc, char** argv)
+* \brief Main program to remove directory
+* \param argc directory to remove
+* \param argv destination directory (not existing)
+* \return int : 0 if remove done else return an error
+*/
 int main (int argc, char **argv){
 	struct stat info;
 	/* the parameter is mandatory*/

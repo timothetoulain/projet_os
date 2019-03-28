@@ -1,3 +1,14 @@
+/**
+* \file main.c
+* \brief File manager launcher
+* \author BERANGER Claire (50%) - TOULAIN Timothe(50%)
+* \version 6
+* \date 28 march 2019
+*
+* Program for lauching file and folder management
+* Commands ls, cp, mkdir, rmdir, touch, unlink, mv, cpdir et size are available from the execution of this program
+*
+*/
 #include<stdio.h>
 #include<unistd.h>
 #include<sys/types.h>
@@ -15,6 +26,9 @@ const int storage=800000;
 //The constant PATH is the path to the directory where the functions are
 #define PATH "/usr/local/command/"
 
+/**
+* Main fonction
+*/
 int main(){
 	char argument[3];
 	char param1[ARRAY_SIZE];

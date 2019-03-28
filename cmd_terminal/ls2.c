@@ -1,8 +1,13 @@
-/****************************************************************************
+/**
+* \file ls2.c
+* \brief List file
+* \author BERANGER Claire (50%) - TOULAIN Timothe (50%)
+* \version 6
+* \date 28 march 2019
 *
-* Command "ls" 
+* Program to list file : Command ls
 *
-****************************************************************************/
+*/
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -13,6 +18,13 @@
 /***************************************************************************
 * use: ls2 [-l] [<dir>]
 ***************************************************************************/
+/**
+* \fn int main(int argc, char** argv)
+* \brief Main program to list file
+* \param argc option to list
+* \param argv destination file (not existing)
+* \return int : 0 if copy done else return an error
+*/
 int main(int argc, char ** argv) {
 	DIR * curDir;
 	struct dirent * cur;

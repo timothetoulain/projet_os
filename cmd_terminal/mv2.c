@@ -1,3 +1,13 @@
+/**
+* \file mv2.c
+* \brief Move file
+* \author BERANGER Claire (50%) - TOULAIN Timothe (50%)
+* \version 6
+* \date 28 march 2019
+*
+* Program to move file : Command mv
+*
+*/
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -10,14 +20,25 @@
 #define BSIZE 512
 #define ARRAY_SIZE 255
 
-/* determine if a given path is a directory*/
+/**
+* \fn int isDirectory(const char *path)
+* \brief Determine if a given path is a directory
+* \param path 
+* \return S_ISDIR(statbuf.st_mode)
+*/
 int isDirectory(const char *path) {
    struct stat statbuf;
    if (stat(path, &statbuf) != 0)
        return 0;
    return S_ISDIR(statbuf.st_mode);
 }
-
+/**
+* \fn int my_cp(char *source, char *destination)
+* \brief Function to copy current file
+* \param source current file
+* \param destination destination file (not existing)
+* \return int : 0 if copy done else return an error
+*/
 int my_cp(char *source, char *destination) {
 	int fd1, fd2; /* file descriptors */
 	int count; /* nb of bytes per transfert */
@@ -57,13 +78,13 @@ int my_cp(char *source, char *destination) {
 	return 0;
 }
 
-
-/***************************************************************************
-* parameters :
-* - file to move
-* - destination (not existing)
-*
-***************************************************************************/
+/**
+* \fn int main(int argc, char** argv)
+* \brief Main program to move file
+* \param argc file to move
+* \param argv destination file (not existing)
+* \return int : 0 if move done else return an error
+*/
 int main(int argc, char** argv) {
 	if (argc != 3) { /* incorrect number of parameters */
 		fprintf(stderr, "use: %s <source> <dest>\n", *argv);
