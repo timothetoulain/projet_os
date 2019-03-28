@@ -1,13 +1,7 @@
-/**
-* \file sizemem.c
-* \brief Size of directory
-* \author BERANGER Claire (50%) - TOULAIN Timothe (50%)
-* \version 6
-* \date 28 march 2019
-*
-* Program to determine and display the storage still available for the user : Command size
-*
+/*
+* Determine and display the storage still available for the user
 */
+
 #include<stdio.h>
 #include<unistd.h>
 #include<sys/types.h>
@@ -22,13 +16,7 @@
 // 800Ko available
 const int storage=800000;
 
-/**
-* \fn void calculateSize(char *dirName, int level, int *currentSize)
-* \brief Go through all the directories and files to determine the whole size
-* \param dirName character string
-* \param level int
-* \param currentSize int
-*/
+//Go through all the directories and files to determine the whole size
 void calculateSize(char *dirName, int level, int *currentSize){
 	int i;
 	DIR *curDir;
@@ -54,11 +42,6 @@ void calculateSize(char *dirName, int level, int *currentSize){
 	closedir(curDir);
 	chdir("..");
 }
-/**
-* \fn int main()
-* \brief Main program to find size of directory
-* \return int
-*/
 int main(){
 	char curDir[ARRAY_SIZE];
 	getcwd(curDir, ARRAY_SIZE);

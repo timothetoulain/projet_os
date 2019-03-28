@@ -63,7 +63,6 @@ int main(){
 			chdir(curDir);
 			getcwd(curDir, ARRAY_SIZE);
 
-			printf("size main: %d\n",currentSize);
 		    //If the input is a valid command
 		    if(analyseInput(input,command,argument,param1,param2,currentSize)==0){
 				

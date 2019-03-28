@@ -1,13 +1,3 @@
-/**
-* \file cp2.c
-* \brief Copy file
-* \author BERANGER Claire (50%) - TOULAIN Timothe (50%)
-* \version 6
-* \date 28 march 2019
-*
-* Program to copy file : Command cp
-*
-*/
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -20,26 +10,20 @@
 #define BSIZE 512
 #define ARRAY_SIZE 255
 
-/**
-* \fn int isDirectory(const char *path)
-* \brief Determine if a given path is a directory
-* \param path 
-* \return S_ISDIR(statbuf.st_mode)
-*/
-int isDirectory(const char *path) {
+/* determine if a given path is a directory*/
+/*int isDirectory(const char *path) {
    struct stat statbuf;
    if (stat(path, &statbuf) != 0)
        return 0;
    return S_ISDIR(statbuf.st_mode);
-}
+}*/
 
-/**
-* \fn int main(int argc, char** argv)
-* \brief Main program to copy file
-* \param argc file to copy
-* \param argv destination file (not existing)
-* \return int : 0 if copy done else return an error
-*/
+/***************************************************************************
+* parameters :
+* - file to copy
+* - destination file (not existing)
+*
+***************************************************************************/
 int main(int argc, char** argv) {
 	int fd1, fd2; /* file descriptors */
 	int count; /* nb of bytes per transfert */

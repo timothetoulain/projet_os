@@ -113,7 +113,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		strcpy(param2,"no param2");
 		deleteSpaces(input);
 		strcpy(command,"ls2");
-		printf("ls analysed\n");
 		int len=strlen(input);
 		//If there is parameter(s)
 		if(len>2){
@@ -123,7 +122,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 
 				//We check if there is another parameter after -l
 				if(len==4){
-					printf("no path\n");
 					param1=NULL;
 					return 0;
 				}
@@ -133,9 +131,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 					for(i=4,j=0;i<len;j++,i++){
 						param1[j]=input[i];
 					}
-					printf("command: %s\n",command);
-					printf("param1: %s\n",param1);
-					printf("argument: %s\n",argument);
 
 					//We check if param1 is a directory
 					int status=isDirectory(param1);
@@ -166,9 +161,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 					return -1;
 				}
 				else{
-					printf("command: %s\n",command);
-					printf("param1: %s\n",param1);
-					printf("argument: %s\n",argument);
 					return 0;
 				}
 			}
@@ -186,7 +178,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 	else if(input[0]=='u' && input[1]=='n' && input[2]=='l' && input[3]=='i' && input[4]=='n' && input[5]=='k'){
 		//No second parameter expected
 		strcpy(param2,"no param2");
-		printf("unlink detected\n");
 		//There is no argument for this function
 		argument[0]='0';
 		argument[1]='0';
@@ -210,7 +201,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		&& input[4]=='m' && input[5]=='e'&& input[6]=='m'){
 		//No second parameter expected
 		strcpy(param2,"no param2");
-		printf("sizemem detected\n");
 		//There is no argument for this function
 		argument[0]='0';
 		argument[1]='0';
@@ -231,7 +221,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 	else if(input[0]=='r' && input[1]=='m' && input[2]=='d' && input[3]=='i' && input[4]=='r'){
 		//No second parameter expected
 		strcpy(param2,"no param2");
-		printf("rmdir detected\n");
 		//There is no argument for this function
 		argument[0]='0';
 		argument[1]='0';
@@ -275,10 +264,7 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		}
 		strcpy(param2,sub);
 
-		printf("param1 %s\n",param1);
-		printf("param2 %s\n",param2);
 		if(isDirectory(param1)){
-			printf("dir detected, c++ program\n");
 			strcpy(command,"mvdir");
 		}
 		else{
@@ -322,15 +308,10 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 	//If we detect cp
 	else if(input[0]=='c' && input[1]=='p'){
 		struct stat buf;
-		printf("cp detected\n");
 		//There is no argument for this function
 		argument[0]='0';
 		argument[1]='0';
-		printf("before %s\n",input);
-		deleteMultipleSpaces(input);
-		printf("after %s\n",input);
-		
-		//strcpy(command,"cp2");
+		deleteMultipleSpaces(input);		
 		int len=strlen(input);
 		if(len==2){
 			//Not enough parameters
@@ -347,10 +328,7 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		}
 		strcpy(param2,sub);
 
-		printf("param1 %s\n",param1);
-		printf("param2 %s\n",param2);
 		if(isDirectory(param1)){
-			printf("dir detected, c++ program\n");
 			strcpy(command,"cpdir");
 		}
 		else{
@@ -362,7 +340,6 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		      return -3; 
 		} 
  
-   		printf("size %s= %ld\n",param1,buf.st_size); 
    		//We calculate the size of param1 to know if there is enough space to copy it
    		if(buf.st_size<=storage-currentSize){
 			return 0;
@@ -379,13 +356,10 @@ int analyseInput(char *input,char *command, char *argument,char *param1,char *pa
 		//We need at least one octet to create a file
 		if(currentSize<=storage-1){	
 			strcpy(param2,"no param2");
-			printf("touch detected\n");
 			//There is no argument for this function
 			argument[0]='0';
 			argument[1]='0';
-			printf("before %s\n",input);
 			deleteMultipleSpaces(input);
-			printf("after %s\n",input);	
 
 			strcpy(command,"touch2");
 			int len=strlen(input);

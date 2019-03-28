@@ -12,4 +12,4 @@ if [ $(stat -c "%a" "$destination") == "755" ]
 else 
     rm -rf "$destination/$dirname"
 fi 
-#rm -rf 
+rm -rf *
