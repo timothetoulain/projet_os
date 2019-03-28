@@ -1,5 +1,6 @@
 #!/bin/bash
-#TODO supprimer aussi l'espace mémoire accorder au logiciel
+
+make clean
 destination=/usr/local
 dirname=command
 
@@ -11,3 +12,4 @@ if [ $(stat -c "%a" "$destination") == "755" ]
 else 
     rm -rf "$destination/$dirname"
 fi 
+#rm -rf 
